@@ -1,60 +1,53 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
- */
 package segundoparcialing;
 
 import java.time.LocalDate;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AbonadoTest {
     
     private static Abonado ciu;
     private static int numeroTest = 0;
     
-    
     public AbonadoTest() {
     }
     
-    @BeforeClass
+    @BeforeAll 
     public static void antesDeTodo() {
         ciu = new Abonado("Anonimus", "Daniela Mestre", "daniela@gmail.com", 1212);
         System.out.println("INGRESO de abonado del bien");
     }
     
-    @AfterClass
+    @AfterAll 
     public static void despuesDeTodo() {
         LocalDate fechaAyer = LocalDate.now().minusDays(1);
         System.out.println(fechaAyer + "Modem rotos reparados, Abonadoes Felices");
     }
     
-    @Before
+    @BeforeEach 
     public void setUp() {
         numeroTest++;
         System.out.println("--------------------------------------------");
         System.out.println("Iniciando método de Test N°: " + numeroTest);
     }
     
-    @After
+    @AfterEach 
     public void tearDown() {
         System.out.println("--------------------------------------------");
     }
 
- 
-    @Test
+    @Test //tiene que fallar 
     public void testValidarUsr() {
         System.out.println("validarUsr");
         boolean result = ciu.validarIngreso(123456);
-        assertTrue("La prueba debe FALLAR de forma intencional", result);
-      
+        assertTrue(result, "La prueba debe FALLAR de forma intencional");
     }
 
-   
     @Test
     public void testValidarEmail() {
        System.out.println("ValidarEmail");
@@ -65,10 +58,8 @@ public class AbonadoTest {
        boolean largoValido = email.length() < 20;
        
        boolean result = tieneArroba && tienePunto && largoValido;
-       assertTrue("El email no cumple los requisitos ", result);
-       
+       assertTrue(result, "El email no cumple los requisitos ");
     }
-       
 
     @Test
     public void testCambioPass() {
@@ -78,28 +69,24 @@ public class AbonadoTest {
         
         assertEquals(1234, ciu.getContraseña());
         System.out.println("Contraseña modificada correctamente: " + ciu.getContraseña());
-      
     }
 
-    /**
-     forzar el error por timeout 45ms > 30 ms
-     */
-    @Test(timeout = 30)
+    @Test //tiene que fallar 
     public void testDelay() {
         System.out.println("delay");
-        ciu.delay(45);
-        
+        assertTimeoutPreemptively(java.time.Duration.ofMillis(30), () -> {
+            ciu.delay(45);
+        });
     }
-
 
     @Test
     public void testAbonadosDiferentes() {
         System.out.println("abonadosDiferentes");
-        Abonado c1 = new Abonado("42.568.598", "Jorge", "jorge@gmail.com",1778);
-        Abonado c2 = new Abonado ("39.254.465", "Rodrigo", "rodrigo@gmail.com",6666);
+        Abonado c1 = new Abonado("42.568.598", "Jorge", "jorge@gmail.com", 1778);
+        Abonado c2 = new Abonado("39.254.465", "Rodrigo", "rodrigo@gmail.com", 6666);
         
         boolean resultadoLogico = c1.abonadosDiferentes(c2);
         assertTrue(resultadoLogico);
-        assertNotSame("misma persona", c1, c2);
+        assertNotSame(c1, c2, "misma persona");
     }
 }
